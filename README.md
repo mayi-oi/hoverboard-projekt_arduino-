@@ -7,5 +7,5 @@
 
 task list lol:
 - [x] programm auf arduino ide!
-- [ ] Hardwere zusammen aufbauen
+- [ ] Hardwere zusammen aufbauen (wann ist möglich lol)
 - [ ] testen lol
