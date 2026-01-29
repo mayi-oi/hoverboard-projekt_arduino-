@@ -1,29 +1,60 @@
-#define SENDEN 6
-#define ECHO 7
-#define LAUTSPRECHER 4
+#include <Wire.h>
+#include <I2Cdev.h>
+#include <MPU6050.h>
+#include <PID_v1.h>
 
-long Zeit;
-long Entferung;
+// MPU650 mpu;
+
+double Setpoint, Input, Output;
+double Kp = 10, =5, Kd = 1;
+PID pid(&Input,&Output, &Setpoint, Kp, Ki, Kd, DIRECT);
+
+int enA = 9;
+int in1 = 8;
+int in2 = 7;
 
 void setup()
 {
-pinMode(SENDEN, OUTPUT);
-pinMode(ECHO, INPUT);
+  Serial.begin(9600);
+  Wire.begin();
+  mpu.initialize();
+
+  Setpoint = 0;
+
+  pid.SetMode(AUTOMATIC);
+  pin.SetOutputlimts(-255, 255);
+
+  pinMode(enA, OUTPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
 }
 
-void loop()
+void loop ()
 {
-digitalWrite(SENDEN, LOW);
-delay(10);
+  int16_t ax, ay, az, gx, gy, gz;
+  mpu.getMontion6(&ax, &ay, &az; &gx, &gy, &gz);
+  
+  double angle = atan2(ay, az) * 18ß / PI;
+    Input = angle;
+    pid.Compute();
 
-digitalWrite(SENDEN, HIGH);
-delayMicroseconds(10);
-digitalWrite(SENDEN, LOW);
-Zeit = pulseIn(ECHO, HIGH);
-Entferung = (Zeit / 2) * 0.03432;
-if (Entferung < 20)
-{
-  delay(500);
-  tone(LAUTSPRECHER, map(Entferung,1 ,20, 200, 1000), 500);
-}
+    int motorSpeed = (Int)Output;
+    if (Output > 0)
+    {
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, LOW);
+      {
+        else
+      }
+
+      digitalWrite(in1, LOW);
+      digitalWrite(in2, HIGH);
+      motorSpeed = - motorSpeed;
+
+      // display port
+      Serial.print("Winkel: ");
+      Serial.print(angle);
+      Serial.print("Motor: ");
+      Serial.println(Output);
+    }
 }
